@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Modal, Pressable, TextInput} from 'react-native';
+import searchApi from '../../api/searchApi';
 import IconSearch from '../icons/ic_search.svg'
 import * as colors from '../theme/colors';
 import ModalBase from '../ui/ModalBase';
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSearchBook, fetchSearchPending } from '../../redux/actions/searchAction';
 
 type HeaderProps = {
     handleNav: () => void;
@@ -14,6 +17,18 @@ type HeaderProps = {
 }
 const Header = (props: HeaderProps) => {
     const [search, setSearch] = useState('')
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const fetchBookList = async () => {
+          try { 
+              const response = await searchApi.getSearchBook(search);
+              dispatch(fetchSearchBook(response.books));
+        } catch (err) {
+          console.log(err)
+        }
+        }
+        fetchBookList()
+      },[search])
     return (
         <View style={{backgroundColor: 'red'}}>  
         <View style={styles.header}>

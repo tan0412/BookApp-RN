@@ -3,23 +3,30 @@ import { View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
 import { normalize } from "../../utils/responsive";
 import ShoppingCart from "./components/ShoppingCart";
 import * as colors from "../../shared/theme/colors"
-import BookCart from "../../data/mocks/BookCart";
-import Spacer from "react-spacer";
 import PayShopping from "./components/PayShopping";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, store } from '../../redux/store';
 
-const ShoppingScreen = () => {
+import bookApi from "../../api/BookApi";
+import { get } from "immer/dist/internal";
+
+const ShoppingScreen =  () => {
     const [data, setData] = useState([])
-    const counter = useSelector((state:RootState) => state.count.value)
-    const dispatch = useDispatch();
-
+    
     useEffect(() => {
-        axios.get('https://api.itbook.store/1.0/new') 
-            .then((res) => setData(res.data.books))
-      },[])
-      
+      const fetchBookList = async () => {
+        try {
+            const response = await bookApi.getApiBook(); 
+            console.log(response?.books)
+            setData(response?.books)
+           
+      } catch (err) {
+        console.log(err)
+      }
+      }
+      fetchBookList()
+    },[])
+    
+    
     
     return (
         <View style={styles.container}>
@@ -32,14 +39,7 @@ const ShoppingScreen = () => {
                     <ShoppingCart key={item.isbn13} img={item.image} name={item.title} price={item.price} />
                     )
                 })}
-                {/* <FlatList 
-                data={data}
-                renderItem={({ item }) => (
-                    <ShoppingCart img={item.img} name={item.name} price={item.price} />
-                )}
-                keyExtractor={item => `${item.id}`} 
-                // ListFooterComponent={footer}
-                /> */}
+               
             </ScrollView>
             
             <PayShopping />

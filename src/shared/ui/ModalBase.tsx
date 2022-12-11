@@ -6,20 +6,29 @@ import Spacer from 'react-spacer';
 import { BookData } from '../../data/mocks/Book';
 import IconBack from '../icons/ic_back.svg';
 import IconShopping from '../icons/ic_shopping.svg'
-
+import { useSelector } from 'react-redux';
 import BookCard from './BookCard';
 import Header from './Header';
+import { RootState, store } from '../../redux/store';
+import Loading from './Loading';
 
 type ModalBaseProps = {
   visible: boolean;
   toggleModal: () => void;
   handleNav: () => void;
-  data?: any;
   searchText?: string;
 }
 const ModalBase = (props: ModalBaseProps, ) => {
- const data =props.data;
-    
+ const [isLoading, setIsLoading] = useState(false)
+ const search = useSelector((state:RootState) => state.search.bookData)
+ useEffect(() => {
+  if(!search || search.length == 0) {
+  setIsLoading(true)
+} else {
+  setIsLoading(false)
+}
+ }, [search])
+
     return (
     <View style={styles.centeredView}>
       <Modal
@@ -28,26 +37,20 @@ const ModalBase = (props: ModalBaseProps, ) => {
         visible={props.visible}
         onRequestClose={props.toggleModal}
       >
-        
-         <Header iconLeft={IconBack} iconRigth={IconShopping} handleNav={props.handleNav} />
+        <Header iconLeft={IconBack} iconRigth={IconShopping} handleNav={props.handleNav} />
+        { isLoading ? <Loading /> : 
         
          <View style={{flex: 1}}>
-         {/* {data.map((item: any) => {
-         
-                    return (
-                      <BookCard img={item.image} name={item.title} price={item.price} />
-                    )
-                })} */}
           <FlatList 
           numColumns={2}
-           data={data}
+           data={search}
            renderItem={({item, index}) => (
             <BookCard img={item.image} name={item.title} price={item.price} />
           )}
            
           />
          </View>
-       
+        }
         
         </Modal>
         </View>
