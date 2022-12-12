@@ -16,7 +16,6 @@ const ShoppingScreen =  () => {
       const fetchBookList = async () => {
         try {
             const response = await bookApi.getApiBook(); 
-            console.log(response?.books)
             setData(response?.books)
            
       } catch (err) {

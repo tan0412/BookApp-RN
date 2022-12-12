@@ -1,5 +1,5 @@
 import { CommonActions } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import {PageProps} from '../../shared/type/PageProps';
 import IconBack from '../../shared/icons/ic_back.svg';
@@ -12,9 +12,27 @@ import { NAVIGATIONS_ROUTE } from "../../navigation/routes";
 import { normalize } from "../../utils/responsive";
 import IconFavorite from "../../shared/icons/IconFavorite";
 import BottomShopping from "./components/BottomShopping";
+import bookApi from "../../api/BookApi";
 
 
-const BookDetailScreen = ({navigation} : PageProps) => {
+const BookDetailScreen = ({navigation, route} : PageProps,) => {
+    const  id  = route.params
+    const str: Array<string> = Object.values(id)
+    const [data, setData] = useState({})
+    
+    useEffect(() => {
+        const fetchGetBookDetails = async()=>  {
+            try {
+                const res = await bookApi.getApiBookDetail(str[0])
+                
+                setData(res)
+            } catch (err) {
+                console.log(err);
+        }
+    }
+    fetchGetBookDetails()
+},[str[0]])
+ 
     const handleBack = () => {
         navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_LOGIN}))
     }
@@ -35,31 +53,23 @@ const BookDetailScreen = ({navigation} : PageProps) => {
             </View>
             <ScrollView style={styles.scroll}>
             <View style={styles.image}>
-                <Image source={require('../../data/images/image1.png')} style={{ resizeMode:'cover', marginTop: 5,}} />
-                <Text style={styles.text}>Con chim biec xanh bay ve</Text>
+                <Image source={{uri: data.image}} style={{ resizeMode:'cover', marginTop: 5, height: 400}} />
+                <Text style={styles.text}>{data.subtitle}</Text>
                 <View style={styles.heart}>
                     <IconFavorite isActive={true}/>
                 </View>
-                <Text style={styles.text}>35.000 </Text>
+                <Text style={styles.text}>{data.price} </Text>
             </View>
             <View style={styles.info}>
                 <View style={styles.headInfo}>
                     <Text style={styles.textInfo}>Thông tin sản phẩm</Text>
                 </View>
                 <View style={styles.contentInfo}>
-                    <Text style={styles.textContent}>Mã hàng</Text>
-                    <Text style={styles.textContent}>Nhà cung cấp</Text>
-                    <Text style={styles.textContent}>Tác giả</Text>
-                    <Text style={styles.textContent}>Nhà xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
-                    <Text style={styles.textContent}>Năm xuất bản</Text>
+                    <Text style={styles.textContent}>Mã hàng: {data.isbn10}</Text>
+                    <Text style={styles.textContent}>Tác giả : {data.authors}</Text>
+                    <Text style={styles.textContent}>Nhà xuất bản: {data.publisher}</Text>
+                    <Text style={styles.textContent}>Năm xuất bản: {data.year}</Text>
+                    
                 </View>
             </View>
             </ScrollView>
@@ -96,7 +106,7 @@ const styles = StyleSheet.create({
     } ,
     image: {
        backgroundColor: colors.white,
-        
+    
     }, 
     heart: {
         alignSelf: 'flex-end',

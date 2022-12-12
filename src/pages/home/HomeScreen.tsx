@@ -12,13 +12,15 @@ import { CommonActions } from '@react-navigation/native';
 import { NAVIGATIONS_ROUTE } from '../../navigation/routes';
 import axios from 'axios';
 import ModalBase from '../../shared/ui/ModalBase';
-ModalBase
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+
 
 export default function HomeScreen({navigation}: PageProps) {
- 
+ const id = useSelector((state:RootState) => state.id.id)
  const [modalVisible, setModalVisible] = useState(false)
   const handlerNavigation = () => {
-    navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL}))
+    navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: id}}))
 }
 const toggleModal = () => {
   setModalVisible(!modalVisible)
@@ -27,11 +29,12 @@ const toggleModal = () => {
 const handlerNav= () => {
   navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_SHOPPING}))
 }
+const handlerNavBookDetail= () => {
+  console.log(id)
+  navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: id}}))
+}
 const [data, setData] = useState([])
-useEffect(() => {
-  axios.get('https://api.itbook.store/1.0/new') 
-      .then((res) => setData(res.data.books))
-},[])
+
   return (
     <View style={styles.container}>
       <Header 
@@ -44,7 +47,7 @@ useEffect(() => {
       <View style={{height: 250, marginBottom: 20}}>
         <Slider />
       </View>
-      {/* <BookCard 
+      {/*\ <BookCard 
               img={require('../../shared/icons/image1.png')}
               name= {'Nhung ngon nen trong dem lap lanh lung linh...'}
               price={'20000d'}/>
@@ -61,7 +64,7 @@ useEffect(() => {
       <BookList category={'Sách Giáo Khoa'} navigation={handlerNavigation}/> */}
       <Spacer height={20}/>
       </ScrollView>
-      <ModalBase data={data} visible={modalVisible} toggleModal={toggleModal} handleNav={handlerNav} />
+      <ModalBase data={data} visible={modalVisible} toggleModal={toggleModal} handleNav={handlerNav} handleNavBook={handlerNavBookDetail} />
    </View>
    
   );

@@ -1,29 +1,31 @@
-import { CommonActions } from '@react-navigation/native';
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { NAVIGATIONS_ROUTE } from '../../navigation/routes';
 import * as colors from '../theme/colors';
-import { PageProps } from '../type/PageProps';
+import {useDispatch} from 'react-redux';
+import { getIdBook } from '../../redux/actions/getIdBook';
 
 type BookCardProps = {
+    id: number,
     img: any,
     name: string,
     price: string,
+    handlerNav: () => void,
 }
 
-const BookCard = (props: BookCardProps, {navigation}:PageProps) => {
-    // const handlerNavigation = () => {
-    //     // navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_LOGIN}))
-    //     navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_LOGIN}))
-    // }
+const BookCard = (props: BookCardProps) => {
+    const dispatch = useDispatch()
+    const onClick = () =>{
+        
+    }
     return (
-        <View style={styles.container} >
+        <TouchableOpacity style={styles.container} onPressIn={() =>dispatch(getIdBook(props.id))} onPress={props.handlerNav} >
             <Image source={{uri:props.img}} style={styles.image}/>
             <View style={styles.viewText}>
                 <Text style={styles.text}>{props.name}</Text>
                 <Text style={styles.textPrice}>{props.price}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

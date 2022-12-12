@@ -1,12 +1,12 @@
 import { BookData } from "../../data/mocks/Book";
-import { BookState } from "../../data/models/BookCategory";
+import { BookArrayState, BookState } from "../../data/models/BookCategory";
 import { ReduxSearchActionTypes, ReduxSearchAction } from "../reducers/type";
 
 /**
  * Seatch Action for Items
  */
 
-export function fetchSearchBook (bookData: BookState[]) : ReduxSearchAction {
+export function fetchSearchBook (bookData: BookArrayState) : ReduxSearchAction {
     return {
         type: ReduxSearchActionTypes.SEARCH_ACTIONS,
         data: bookData,

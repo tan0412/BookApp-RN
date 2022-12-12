@@ -11,15 +11,19 @@ import BookCard from './BookCard';
 import Header from './Header';
 import { RootState, store } from '../../redux/store';
 import Loading from './Loading';
+import { PageProps } from '../type/PageProps';
+import { NAVIGATIONS_ROUTE } from '../../navigation/routes';
 
 type ModalBaseProps = {
   visible: boolean;
   toggleModal: () => void;
   handleNav: () => void;
   searchText?: string;
+  handleNavBook: () => void;
 }
-const ModalBase = (props: ModalBaseProps, ) => {
+const ModalBase = (props: ModalBaseProps,) => {
  const [isLoading, setIsLoading] = useState(false)
+ 
  const search = useSelector((state:RootState) => state.search.bookData)
  useEffect(() => {
   if(!search || search.length == 0) {
@@ -45,7 +49,7 @@ const ModalBase = (props: ModalBaseProps, ) => {
           numColumns={2}
            data={search}
            renderItem={({item, index}) => (
-            <BookCard img={item.image} name={item.title} price={item.price} />
+            <BookCard img={item.image} name={item.title} price={item.price} handlerNav={props.handleNavBook} id={item.isbn13} />
           )}
            
           />
