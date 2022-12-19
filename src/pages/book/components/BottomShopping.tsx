@@ -2,7 +2,11 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import * as colors from '../../../shared/theme/colors'
 
-const BottomShopping = () => {
+type BottomShoppingTypes = {
+    handleDispatch: () => void,
+}
+
+const BottomShopping = (props:BottomShoppingTypes) => {
     return (
     <View style={styles.container}>
         <View style={styles.counter}>
@@ -14,7 +18,7 @@ const BottomShopping = () => {
                 <Text style={styles.borderText}>+</Text>
             </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.buyShopping}>
+        <TouchableOpacity style={styles.buyShopping} onPress={props.handleDispatch}>
             <Text style={styles.title}>Mua ngay</Text>
         </TouchableOpacity>
     </View>

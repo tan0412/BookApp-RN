@@ -10,14 +10,11 @@ type BookCardProps = {
     img: any,
     name: string,
     price: string,
-    handlerNav: () => void,
+    handlerNav?: () => void,
 }
 
 const BookCard = (props: BookCardProps) => {
     const dispatch = useDispatch()
-    const onClick = () =>{
-        
-    }
     return (
         <TouchableOpacity style={styles.container} onPressIn={() =>dispatch(getIdBook(props.id))} onPress={props.handlerNav} >
             <Image source={{uri:props.img}} style={styles.image}/>

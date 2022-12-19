@@ -1,6 +1,7 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 import {combineReducers, createStore} from 'redux';
+import cartReducer from './reducers/cartReducer';
 import countReducer from './reducers/countReducer';
 import getIdReducer from './reducers/getIdReducer';
 import searchReducer from './reducers/searchReducer';
@@ -16,6 +17,7 @@ export const store = configureStore({
         count:countReducer, 
         search:searchReducer,
         id: getIdReducer,
+        cart: cartReducer,
     }})
 
 

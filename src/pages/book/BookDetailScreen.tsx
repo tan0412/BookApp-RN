@@ -1,6 +1,6 @@
 import { CommonActions } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, GestureResponderEvent } from "react-native";
 import {PageProps} from '../../shared/type/PageProps';
 import IconBack from '../../shared/icons/ic_back.svg';
 import IconSearch from '../../shared/icons/ic_search_white.svg';
@@ -13,13 +13,16 @@ import { normalize } from "../../utils/responsive";
 import IconFavorite from "../../shared/icons/IconFavorite";
 import BottomShopping from "./components/BottomShopping";
 import bookApi from "../../api/BookApi";
-
+import ReadMore from '@fawazahmed/react-native-read-more';
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/actions/cartAction";
 
 const BookDetailScreen = ({navigation, route} : PageProps,) => {
     const  id  = route.params
     const str: Array<string> = Object.values(id)
     const [data, setData] = useState({})
-    
+    const dispatch = useDispatch()
+   
     useEffect(() => {
         const fetchGetBookDetails = async()=>  {
             try {
@@ -32,13 +35,17 @@ const BookDetailScreen = ({navigation, route} : PageProps,) => {
     }
     fetchGetBookDetails()
 },[str[0]])
- 
-    const handleBack = () => {
-        navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_LOGIN}))
-    }
+    
     const handleNavigationHome = () => {
+        navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_SHOPPING}))
+    }
+    const handleBack = () => {
         navigation.dispatch(CommonActions.goBack)
     }
+    const handleDispatch = () => {
+        dispatch(addToCart(data))
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -58,24 +65,34 @@ const BookDetailScreen = ({navigation, route} : PageProps,) => {
                 <View style={styles.heart}>
                     <IconFavorite isActive={true}/>
                 </View>
-                <Text style={styles.text}>{data.price} </Text>
+                <Text style={[styles.text,{color: colors.primaryOrange}]}>{data.price} </Text>
             </View>
             <View style={styles.info}>
                 <View style={styles.headInfo}>
                     <Text style={styles.textInfo}>Thông tin sản phẩm</Text>
                 </View>
                 <View style={styles.contentInfo}>
-                    <Text style={styles.textContent}>Mã hàng: {data.isbn10}</Text>
-                    <Text style={styles.textContent}>Tác giả : {data.authors}</Text>
-                    <Text style={styles.textContent}>Nhà xuất bản: {data.publisher}</Text>
-                    <Text style={styles.textContent}>Năm xuất bản: {data.year}</Text>
-                    
+                    <Text style={styles.textContent}>Mã hàng:   {data.isbn10}</Text>
+                    <Text style={styles.textContent}>Tác giả:   {data.authors}</Text>
+                    <Text style={styles.textContent}>Nhà xuất bản:  {data.publisher}</Text>
+                    <Text style={styles.textContent}>Năm xuất bản:  {data.year}</Text>
+                    <Text style={styles.textContent}>Số trang:  {data.pages}</Text>
+                    <Text style={styles.textContent}>Ngôn ngữ:  {data.language}</Text>
+                    <Text style={[styles.textContent,{fontWeight: '600'}]}>Tóm tắt </Text>
+                    <ReadMore numberOfLines={3} style={styles.textStyle} 
+                                seeMoreStyle={{color:colors.primaryOrange}}
+                                seeLessStyle={{color:colors.primaryOrange}}>
+                    {
+                        <Text style={styles.textDesc}>{data.desc}</Text>
+                    }
+                    </ReadMore>
                 </View>
             </View>
             </ScrollView>
             <View style={styles.footer}>
-                <BottomShopping />
+                <BottomShopping handleDispatch={handleDispatch}/>
             </View>
+           
             
         </View>
     )
@@ -110,6 +127,7 @@ const styles = StyleSheet.create({
     }, 
     heart: {
         alignSelf: 'flex-end',
+        marginHorizontal: 20,
     },
     info: {
         backgroundColor: colors.white,
@@ -117,11 +135,36 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     headInfo: {
-        height: 30,
         borderBottomWidth: 1,
     },
-    footer: {
-        alignItems:'flex-end',
+    text: {
+        color: colors.black,
+        fontSize: 16,
+        marginHorizontal: 20,
+        marginVertical: 5
+    },
+    textInfo: {
+        fontSize: 20,
+        color: colors.black,
+        fontWeight: 'bold',
+        marginVertical: 10
+    },
+    textContent: {
+        fontSize: 16,
+        color: colors.black,
+        marginVertical: 5
+    },
+    textDesc: {
+        fontSize: 15,
+        color: colors.black,
+        marginVertical: 5
+    },
+    textStyle: {
+        color: colors.black,
+        fontSize: 14,
+        marginBottom: 5
     }
+    
+    
     
 })

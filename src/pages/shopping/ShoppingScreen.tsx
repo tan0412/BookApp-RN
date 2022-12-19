@@ -4,42 +4,58 @@ import { normalize } from "../../utils/responsive";
 import ShoppingCart from "./components/ShoppingCart";
 import * as colors from "../../shared/theme/colors"
 import PayShopping from "./components/PayShopping";
-import axios from "axios";
-
 import bookApi from "../../api/BookApi";
-import { get } from "immer/dist/internal";
+import Loading from "../../shared/ui/Loading";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import { removeCart } from "../../redux/actions/cartAction";
 
 const ShoppingScreen =  () => {
     const [data, setData] = useState([])
-    
+    const [isLoading, setIsLoading] = useState(true)
+     const cart = useSelector((state:RootState) => state.cart.item)
+    const dispatch = useDispatch()
+    // useEffect(() => {
+    //   const fetchBookList = async () => {
+    //     try {
+    //         const response = await bookApi.getApiBook(); 
+    //         setIsLoading(false)
+    //         setData(response?.books)
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    //   }
+    //   fetchBookList()
+    // },[])
     useEffect(() => {
-      const fetchBookList = async () => {
-        try {
-            const response = await bookApi.getApiBook(); 
-            setData(response?.books)
-           
-      } catch (err) {
-        console.log(err)
-      }
-      }
-      fetchBookList()
-    },[])
-    
-    
-    
+        setData(cart)
+       if (data.length > 0) {
+        setIsLoading(false)
+    }
+    }, [cart])
+ 
+   console.log(isLoading)
     return (
         <View style={styles.container}>
             <View style= {styles.header}>
                 <Text style= {styles.text}>Gio hang</Text>
             </View>
+            { isLoading ? 
+            <Loading/> :
             <ScrollView>
-                {data.map((item: any) => {
+                {data.map((item: any, index) => {
                     return (
-                    <ShoppingCart key={item.isbn13} img={item.image} name={item.title} price={item.price} />
-                    )
+                    <ShoppingCart
+                        key={item.isbn13} 
+                        img={item.image} 
+                        name={item.title} 
+                        price={item.price}  
+                        handleRemove={() => dispatch(removeCart(item, index))}
+                        />
+                    )    
                 })}
                
-            </ScrollView>
+            </ScrollView>}
             
             <PayShopping />
            

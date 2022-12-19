@@ -5,11 +5,13 @@ import IconDelete  from '../../../shared/icons/ic_delete.svg'
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, store } from '../../../redux/store';
 import { decrement, increment } from "../../../redux/actions/countAction";
+import { BookArrayState } from "../../../data/models/BookCategory";
 
 type ShoppingCartProps = {
     img: any,
     name: string,
     price: string,
+    handleRemove: () => void,
 }
 
 const ShoppingCart = (props: ShoppingCartProps) => {
@@ -43,7 +45,7 @@ const ShoppingCart = (props: ShoppingCartProps) => {
                             <Text style={styles.btnText}>+</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.delete}>
+                    <TouchableOpacity style={styles.delete} onPress={props.handleRemove}>
                         <IconDelete  />
                     </TouchableOpacity>
                 </View>
