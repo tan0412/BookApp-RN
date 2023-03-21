@@ -18,17 +18,17 @@ type HeaderProps = {
 const Header = (props: HeaderProps) => {
     const [search, setSearch] = useState('')
     const dispatch = useDispatch();
-    useEffect(() => {
-        const fetchBookList = async () => {
-          try { 
-              const response = await searchApi.getSearchBook(search);
-              dispatch(fetchSearchBook(response.books));
-        } catch (err) {
-          console.log(err)
-        }
-        }
-        fetchBookList()
-      },[search])
+    // useEffect(() => {
+    //     const fetchBookList = async () => {
+    //       try { 
+    //           const response = await searchApi.getSearchBook(search);
+    //           dispatch(fetchSearchBook(response.books));
+    //     } catch (err) {
+    //       console.log(err)
+    //     }
+    //     }
+    //     fetchBookList()
+    //   },[search])
     return (
         <View style={{backgroundColor: 'red'}}>  
         <View style={styles.header}>

@@ -9,6 +9,12 @@ export enum ReduxGetIdActionTypes {
 
 }
 
+export enum ReduxActionPostListActionTypes {
+    GET_LIST_POST = 'GET_LIST_POST',
+    GET_LIST_POST_SUCCESS = 'GET_LIST_POST_SUCCESS',
+
+}
+
 export enum ReduxCartActionTypes {
     ADD_TO_CART = 'ADD_TO_CART',
     REMOVE_CART = 'REMOVE_CART',
@@ -27,6 +33,15 @@ export interface ReduxGetIdAction {
 export interface ReduxCartAction {
     type: ReduxCartActionTypes;
     payload: any;
+}
+
+export interface ReduxActionPostList {
+    type: ReduxActionPostListActionTypes;    
+}
+
+export interface ReduxActionPostListSuccess {
+    type: ReduxActionPostListActionTypes; 
+    payload: BookArrayState;   
 }
 
 export type TSearchAction = ReduxSearchActionTypes

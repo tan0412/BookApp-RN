@@ -13,7 +13,7 @@ import { removeCart } from "../../redux/actions/cartAction";
 const ShoppingScreen =  () => {
     const [data, setData] = useState([])
     const [isLoading, setIsLoading] = useState(true)
-     const cart = useSelector((state:RootState) => state.cart.item)
+     const cart = useSelector((state:RootState) => state.cart)
     const dispatch = useDispatch()
     // useEffect(() => {
     //   const fetchBookList = async () => {
@@ -29,18 +29,18 @@ const ShoppingScreen =  () => {
     // },[])
     useEffect(() => {
         setData(cart)
-       if (data.length > 0) {
-        setIsLoading(false)
-    }
+    //    if (data.length > 0) {
+    //     setIsLoading(false)
+    // }
     }, [cart])
  
-   console.log(isLoading)
+   console.log(cart)
     return (
         <View style={styles.container}>
             <View style= {styles.header}>
                 <Text style= {styles.text}>Gio hang</Text>
             </View>
-            { isLoading ? 
+            { !isLoading ? 
             <Loading/> :
             <ScrollView>
                 {data.map((item: any, index) => {

@@ -12,17 +12,24 @@ import { CommonActions } from '@react-navigation/native';
 import { NAVIGATIONS_ROUTE } from '../../navigation/routes';
 import axios from 'axios';
 import ModalBase from '../../shared/ui/ModalBase';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import BookCard from '../../shared/ui/BookCard';
 import bookApi from '../../api/BookApi';
+import { ReduxActionPostListActionTypes } from '../../redux/reducers/type';
+import { getListPost } from '../../redux/actions/fetchData';
+import Loading from '../../shared/ui/Loading';
 
 
 export default function HomeScreen({navigation}: PageProps) {
- const id = useSelector((state:RootState) => state.id.id)
- const [modalVisible, setModalVisible] = useState(false)
+  const dispatch = useDispatch()
+  const data = useSelector((state: RootState) => state.fetchData.bookData)
+  console.log(data)
+  const isLoading = useSelector((state: RootState) => state.fetchData.loading) 
+  const index = useSelector((state:RootState) => state.id.id)
+  const [modalVisible, setModalVisible] = useState(false)
   const handlerNavigation = () => {
-    navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: id}}))
+    navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: index}}))
 }
 const toggleModal = () => {
   setModalVisible(!modalVisible)
@@ -32,17 +39,11 @@ const handlerNav= () => {
   navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_SHOPPING}))
 }
 const handlerNavBookDetail= () => {
-  console.log(id)
-  navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: id}}))
+  navigation.dispatch(CommonActions.navigate({name: NAVIGATIONS_ROUTE.SCREEN_BOOKDETAIL, params:{id: index}}))
 }
-const [data, setData] = useState([])
 useEffect(() => {
-  async function fetchData() {
-    const res = await bookApi.getApiBook()
-    setData(res.books)
-  }
-  fetchData()
-},[data])
+  dispatch(getListPost())
+}, [])
 
   return (
     <View style={styles.container}>
@@ -56,17 +57,18 @@ useEffect(() => {
       <View style={{height: 250, marginBottom: 20}}>
         <Slider />
       </View>
+      {isLoading ? <Loading/> :
       <View style={{ backgroundColor: colors.white, marginBottom: 10}}>
       <FlatList 
       showsHorizontalScrollIndicator
           numColumns={2}
-           data={data}
+           data={data.items}
            renderItem={({item, index}:any) => (
-            <BookCard img={item.image} name={item.title} price={item.price}  id={item.isbn13} handlerNav={handlerNavBookDetail}/>
+            <BookCard img={item.volumeInfo.imageLinks.smallThumbnail} name={item.volumeInfo.title} price={item.saleInfo?.listPrice?.amount}  id={item.id} handlerNav={handlerNavBookDetail}/>
           )}
            
           />
-      </View>
+      </View>}
       
       
       <ModalBase  visible={modalVisible} toggleModal={toggleModal} handleNav={handlerNav} handleNavBook={handlerNavBookDetail} />
